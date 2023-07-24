@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: first-pod
+  labels:
+    project: qsk-course
+spec:
+  containers:
+    - name: web
+      image: educative1/qsk-course:1.0
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloud-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    project: qsk-course
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: qsk-deploy
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      project: qsk-course
+  template:
+    metadata:
+      labels:
+        project: qsk-course
+    spec:
+      containers:
+      - name: qsk-pod
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        image: educative1/qsk-course:1.0

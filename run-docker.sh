@@ -1,0 +1,1 @@
+docker build --tag kenwong0729/go-gin-ping:latest . && docker push kenwong0729/go-gin-ping:latest && kubectl apply -f deployment.yaml
