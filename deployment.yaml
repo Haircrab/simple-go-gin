@@ -29,21 +29,32 @@ spec:
       project: go-gin-pj-pod
   minReadySeconds: 20
   strategy:
-    type: RollingUpdate
+    type: RollingUpdate # mix of old and new pods, if Recreate, all old pods will be terminated before new pods are created (have downtime)
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: 1 # max number of pods that can be created above the desired number of pods
+      maxUnavailable: 0 # max number of pods that can be unavailable during the update
   template:
     metadata:
       labels:
         project: go-gin-pj-pod # pod label
     spec:
+      volumes: # mount configMap as volume
+         - name: config
+           configMap:
+            name: go-gin-config
       containers:
         - name: web
           imagePullPolicy: Always
           image: kenwong0729/go-gin-ping:latest
           ports:
             - containerPort: 8080
+          # envFrom: # load all env from the configMap
+          #   - configMapRef:
+          #       name: go-gin-config
+          #     prefix: CONFIG_ # to deal wif the conflict env
+          volumeMounts: # mount configMap as volume, e.g. /config/REDIS_URI
+          - name: config
+            mountPath: /config
           env:
             - name: REDIS_URI
               valueFrom:
@@ -57,6 +68,16 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "500m"
+          readinessProbe: # Before start health check, five successful request to be considered as ready
+            periodSeconds: 1
+            successThreshold: 5
+            httpGet:
+              path: /
+              port: 8080
+          livenessProbe: # On live health check, if failed, restart the container
+            httpGet:
+              path: /
+              port: 4567
 ---
 # Load balancer
 apiVersion: v1
@@ -64,7 +85,7 @@ kind: Service
 metadata:
   name: go-gin-deploy
 spec:
-  type: LoadBalancer
+  type: LoadBalancer  # also can be ClusterIP, NodePort
   selector:
     project: go-gin-pj-pod
   ports:

@@ -1,0 +1,40 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: qsk-deploy
+spec:
+  replicas: 5
+  minReadySeconds: 1
+  progressDeadlineSeconds: 60
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      project: qsk-course
+  template:
+    metadata:
+      labels:
+        project: qsk-course
+    spec:
+      containers:
+      - name: api
+        image: vfarcic/go-demo-2
+        env:
+        - name: DB
+          value: go-demo-2-db
+        readinessProbe:
+          httpGet:
+            path: /demo/hello
+            port: 8080
+          periodSeconds: 1
+        livenessProbe:
+          httpGet:
+            path: /demo/hello
+            port: 8080
+
+# kubectl rollout undo -f go-demo-2-api.yml
+# kubectl rollout history -f go-demo-2-api.yml

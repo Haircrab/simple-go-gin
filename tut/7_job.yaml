@@ -1,0 +1,34 @@
+# echo-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: echo-job
+spec:
+  template:
+    spec:
+      backoffLimit: 10 # max number of retries
+      parallelism: 3 # run 3 pods at the same time
+      completions: 5 # run 5 times
+      restartPolicy: OnFailure # Never, OnFailure, Always
+      # ttlSecondsAfterFinished: 10 # delete the job after 10 seconds
+      containers:
+      - name: echo
+        image: busybox
+        command: ["echo", "Running in a job"]
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: echo-cronjob
+spec:
+  schedule: "* * * * *" # Every minute
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: echo
+            image: busybox
+            command: ["echo", "Triggered by a CronJob"]
