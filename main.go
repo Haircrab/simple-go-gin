@@ -1,14 +1,12 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
+	"github.com/go-redis/redis"
 )
 
 // album represents data about a record album.
@@ -29,27 +27,37 @@ func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
-var ctx = context.Background()
+type healthCheck struct {
+	Status string `json:"status"`
+}
+
+func pingHealthCheck(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, healthCheck{Status: "OK"})
+}
+
 
 func main() {
 	// ping redis
 	redis_uri := os.Getenv("REDIS_URI")
-	log.Printf("Connecting to redis at %s", redis_uri)
+
+
+  
+	// log.Printf("Connecting to redis at %s", redis_uri)
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     redis_uri,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-	err := rdb.Set(ctx, "key", "value", 0).Err()
+	err := rdb.Set( "key", "value", 0).Err()
 	if err != nil {
 		panic(err)
 	}
-	val, err := rdb.Get(ctx, "key").Result()
+	val, err := rdb.Get( "key").Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("key", val)
-	val2, err := rdb.Get(ctx, "key2").Result()
+	val2, err := rdb.Get( "key2").Result()
 	if err == redis.Nil {
 		fmt.Println("key2 does not exist")
 	} else if err != nil {
@@ -69,6 +77,7 @@ func main() {
 	// set up gin
 	router := gin.Default()
 	router.GET("/albums", getAlbums)
+	router.GET("/", pingHealthCheck)
 
 	router.Run("0.0.0.0:8080")
 }
