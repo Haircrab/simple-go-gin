@@ -1,13 +1,3 @@
-global:
-  scrape_interval:     15s
-
-scrape_configs:
-  - job_name: prometheus
-    metrics_path: /prometheus/metrics
-    static_configs:
-      - targets:
-        - localhost:9090
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -58,8 +48,8 @@ spec:
         - "--web.console.libraries=/usr/share"
         - "--web.external-url=https://ed-5863349543239680_dc.educative.run/prometheus"
         volumeMounts:
-        - mountPath: /etc/prometheus/prometheus.yml
-          name: prom-conf
+          - mountPath: /etc/prometheus/prometheus.yml
+            name: prom-conf
       volumes:
       - name: prom-conf
         hostPath:
@@ -78,4 +68,3 @@ spec:
   selector:
     type: monitor
     service: prometheus
----

@@ -1,0 +1,30 @@
+services:
+  server:
+    container_name: "simple-go"
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    env_file:
+      - .env.development.local
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+  redis:
+    image: "redis:7.2.1-alpine"
+    container_name: "simple-go-redis"
+    expose:
+      - 6379
+    restart: always
+    ports:
+     - '6379:6379'
+    healthcheck:
+     test: ["CMD", "redis-cli","ping"]
+     interval: 10s
+     timeout: 5s
+     retries: 5

@@ -77,7 +77,8 @@ spec:
           livenessProbe: # On live health check, if failed, restart the container
             httpGet:
               path: /
-              port: 4567
+              port: 8080
+            periodSeconds: 60 # check every 60 seconds
 ---
 # Load balancer
 apiVersion: v1
