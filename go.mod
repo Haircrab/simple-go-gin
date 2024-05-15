@@ -1,4 +1,4 @@
-module ken-dev/simple-go-gin
+module crab-dev/simple-go-gin
 
 go 1.18
 
