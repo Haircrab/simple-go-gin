@@ -1,4 +1,11 @@
 FROM golang:latest
+
 RUN go install github.com/cosmtrek/air@latest
+# RUN go install github.com/google/wire/cmd/wire@latest
+# RUN export PATH=$PATH:$(go env GOPATH)/bin
+
 WORKDIR /app
+
+EXPOSE 8080
+
 ENTRYPOINT ["air"]

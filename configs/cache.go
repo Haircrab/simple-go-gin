@@ -1,10 +1,11 @@
-package service
+package configs
 
 import (
 	"fmt"
 	"os"
 
 	"github.com/go-redis/redis"
+	"github.com/google/wire"
 )
 
 func InitDistributedCache() *redis.Client {
@@ -27,3 +28,5 @@ func InitDistributedCache() *redis.Client {
 
 	return rdb
 }
+
+var CacheSet = wire.NewSet(InitDistributedCache)
