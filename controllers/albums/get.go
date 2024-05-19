@@ -6,12 +6,10 @@ import (
 	"net/http"
 )
 
-func GetAlbums(rg *gin.RouterGroup) {
-	rg.GET("/:id", func(ctx *gin.Context) {
-		id := ctx.Param("id")
+func (pc *DetailsController) Get(ctx *gin.Context) {
+	id := ctx.Param("id")
 
-		var albums = domains.Album{ID: id, Title: "Blue Train", Artist: "John Coltrane", Price: 56.99}
+	var albums = domains.Album{ID: id, Title: "Blue Train", Artist: "John Coltrane", Price: 56.99}
 
-		ctx.JSON(http.StatusOK, albums)
-	})
+	ctx.JSON(http.StatusOK, albums)
 }

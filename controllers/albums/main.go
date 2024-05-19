@@ -1,6 +1,8 @@
 package albums
 
 import (
+	"crab-dev/simple-go-gin/configs"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 )
@@ -11,23 +13,24 @@ type DetailsController struct {
 }
 
 func NewDetailsController() *DetailsController {
+
+	fmt.Println("NewDetailsController")
+
 	return &DetailsController{
 		// logger:  logger,
 		// service: s,
 	}
 }
 
-type InitControllers func(r *gin.Engine)
-
 func CreateInitControllersFn(
 	pc *DetailsController,
-) InitControllers {
+) configs.InitControllers {
 	return func(r *gin.Engine) {
-		route := r.Group("/albums")
-		{
-			GetAlbums(route)
-			ListAlbums(route)
-		}
+
+		fmt.Println("CreateInitControllersFn")
+
+		r.GET("/albums/:id", pc.Get)
+		r.GET("/albums", pc.List)
 	}
 }
 
