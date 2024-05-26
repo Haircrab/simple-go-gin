@@ -1,12 +1,12 @@
 package albums
 
 import (
-	"crab-dev/simple-go-gin/domains"
+	"crab-dev/simple-go-gin/albums/domains"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func (pc *DetailsController) List(ctx *gin.Context) {
+func (pc *AlbumsController) List(ctx *gin.Context) {
 	var albums = []domains.Album{
 		{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
 		{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},

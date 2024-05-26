@@ -1,0 +1,12 @@
+FROM golang:latest
+
+WORKDIR /app
+
+RUN go install github.com/cosmtrek/air@latest
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+WORKDIR /app/cmd/albums
+
+CMD ["air", "-c", "./.air.toml"]

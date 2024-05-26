@@ -1,15 +1,31 @@
-package configs
+package cache
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/go-redis/redis"
 	"github.com/google/wire"
+	"github.com/spf13/viper"
 )
 
-func InitDistributedCache() *redis.Client {
-	redis_uri := os.Getenv("REDIS_URI")
+type Options struct {
+	Url string
+}
+
+func NewOptions(v *viper.Viper) (*Options, error) {
+	var (
+		err error
+		o   = new(Options)
+	)
+	if err = v.UnmarshalKey("redis", o); err != nil {
+		return nil, err
+	}
+
+	return o, err
+}
+
+func New(o *Options) *redis.Client {
+	redis_uri := o.Url
 
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     redis_uri,
@@ -17,6 +33,7 @@ func InitDistributedCache() *redis.Client {
 		DB:       0,  // use default DB
 	})
 
+	// test connection
 	if err := rdb.Set("key", "value", 0).Err(); err != nil {
 		panic(err)
 	}
@@ -29,4 +46,4 @@ func InitDistributedCache() *redis.Client {
 	return rdb
 }
 
-var CacheSet = wire.NewSet(InitDistributedCache)
+var ProviderSet = wire.NewSet(New)

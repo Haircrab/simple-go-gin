@@ -1,4 +1,4 @@
-package configs
+package config
 
 import (
 	"fmt"
@@ -7,7 +7,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-func InitConfig(path string) (*viper.Viper, error) {
+// path string injected by app/main.go
+func New(path string) (*viper.Viper, error) {
+	fmt.Printf("====== path ====== %s", path)
+
 	var (
 		err error
 		v   = viper.New()
@@ -24,4 +27,4 @@ func InitConfig(path string) (*viper.Viper, error) {
 	return v, err
 }
 
-var ProviderSet = wire.NewSet(InitConfig)
+var ProviderSet = wire.NewSet(New)

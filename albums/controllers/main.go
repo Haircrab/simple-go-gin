@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"crab-dev/simple-go-gin/controllers/albums"
+	"crab-dev/simple-go-gin/albums/controllers/albums"
 	"github.com/google/wire"
 )
 
-var ControllerSet = wire.NewSet(
+var ProviderSet = wire.NewSet(
 	albums.ControllerSet,
 )

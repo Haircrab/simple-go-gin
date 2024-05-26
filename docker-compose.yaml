@@ -2,12 +2,12 @@ services:
   server:
     container_name: "simple-go"
     build:
-      dockerfile: Dockerfile.dev
       context: .
-    env_file:
-      - .env.development.local
+      dockerfile: "build/albums/Dockerfile.dev"
+    # env_file:
+    #   - .env.development.local
     ports:
-      - 8080:8080 
+      - 8081:8081 
     volumes:
       - ./:/app
     depends_on:
