@@ -1,6 +1,7 @@
 package albums
 
 import (
+	"crab-dev/simple-go-gin/albums/services/albums"
 	"crab-dev/simple-go-gin/pkg/transports/http"
 	"fmt"
 
@@ -10,14 +11,14 @@ import (
 )
 
 type AlbumsController struct {
-	logger *zap.Logger
-	// service services.DetailsService
+	logger  *zap.Logger
+	service albums.AlbumsService
 }
 
-func NewAlbumsController(logger *zap.Logger) *AlbumsController {
+func NewAlbumsController(logger *zap.Logger, s albums.AlbumsService) *AlbumsController {
 	return &AlbumsController{
-		logger: logger,
-		// service: s,
+		logger:  logger,
+		service: s,
 	}
 }
 

@@ -9,8 +9,9 @@ package main
 import (
 	"crab-dev/simple-go-gin/albums"
 	"crab-dev/simple-go-gin/albums/controllers"
-	albums2 "crab-dev/simple-go-gin/albums/controllers/albums"
+	albums3 "crab-dev/simple-go-gin/albums/controllers/albums"
 	"crab-dev/simple-go-gin/albums/services"
+	albums2 "crab-dev/simple-go-gin/albums/services/albums"
 	"crab-dev/simple-go-gin/pkg/app"
 	"crab-dev/simple-go-gin/pkg/cache"
 	"crab-dev/simple-go-gin/pkg/config"
@@ -42,8 +43,9 @@ func CreateApp(cf string) (*app.Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	albumsController := albums2.NewAlbumsController(zapLogger)
-	initControllers := albums2.CreateInitControllersFn(albumsController)
+	albumsService := albums2.New(zapLogger)
+	albumsController := albums3.NewAlbumsController(zapLogger, albumsService)
+	initControllers := albums3.CreateInitControllersFn(albumsController)
 	engine := http.NewRouter(httpOptions, zapLogger, initControllers)
 	server, err := http.New(httpOptions, zapLogger, engine)
 	if err != nil {

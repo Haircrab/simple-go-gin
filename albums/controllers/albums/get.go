@@ -1,7 +1,6 @@
 package albums
 
 import (
-	"crab-dev/simple-go-gin/albums/domains"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -9,7 +8,10 @@ import (
 func (pc *AlbumsController) Get(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	var albums = domains.Album{ID: id, Title: "Blue Train", Artist: "John Coltrane", Price: 56.99}
+	var albums, err = pc.service.Get(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, "Get one albums error")
+	}
 
 	ctx.JSON(http.StatusOK, albums)
 }
