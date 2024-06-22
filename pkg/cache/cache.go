@@ -2,6 +2,7 @@ package cache
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-redis/redis"
 	"github.com/google/wire"
@@ -34,7 +35,7 @@ func New(o *Options) *redis.Client {
 	})
 
 	// test connection
-	if err := rdb.Set("key", "value", 0).Err(); err != nil {
+	if err := rdb.Set("key", "value", 10*time.Second).Err(); err != nil {
 		panic(err)
 	}
 	if val, err := rdb.Get("key").Result(); err != nil {
@@ -46,4 +47,4 @@ func New(o *Options) *redis.Client {
 	return rdb
 }
 
-var ProviderSet = wire.NewSet(New)
+var ProviderSet = wire.NewSet(NewOptions, New)

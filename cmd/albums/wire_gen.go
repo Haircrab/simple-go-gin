@@ -43,7 +43,12 @@ func CreateApp(cf string) (*app.Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	albumsService := albums2.New(zapLogger)
+	cacheOptions, err := cache.NewOptions(viper)
+	if err != nil {
+		return nil, err
+	}
+	client := cache.New(cacheOptions)
+	albumsService := albums2.New(zapLogger, client)
 	albumsController := albums3.NewAlbumsController(zapLogger, albumsService)
 	initControllers := albums3.CreateInitControllersFn(albumsController)
 	engine := http.NewRouter(httpOptions, zapLogger, initControllers)
